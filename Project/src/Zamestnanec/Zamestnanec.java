@@ -112,8 +112,19 @@ public abstract class Zamestnanec {
 
     // -- Vypis informacii--
     public void vypisInfo() {
-        System.out.println("TODO");
-        //TODO
+        System.out.println("\n=== Informace o zaměstnanci ===");
+        System.out.println("ID: " + id);
+        System.out.println("Jméno: " + jmeno);
+        System.out.println("Příjmení: " + prijmeni);
+        System.out.println("Rok narození: " + rokNarozeni);
+        System.out.println("Skupina: " + getSkupina());
+        System.out.println("Počet spoluprací: " + spoluprace.size());
+        if (!spoluprace.isEmpty()) {
+            System.out.println("Spolupráce:");
+            for (Spoluprace s : spoluprace) {
+                System.out.println("  - ID kolegy: " + s.getIdKolegu() + ", Úroveň: " + s.getUroven());
+            }
+        }
     }
 
     @Override
