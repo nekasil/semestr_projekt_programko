@@ -5,7 +5,7 @@ import java.util.List;
 
 import Zamestnanec.*;
 
-public class SqlManager {
+public class SqlManager implements DataManager {
 
     private static final String DB_URL = "jdbc:sqlite:zamestnanci.db";
 
@@ -155,5 +155,55 @@ public class SqlManager {
     // Pomocne - spojeni
     private Connection connect() throws SQLException {
         return DriverManager.getConnection(DB_URL);
+    }
+
+    // Načtení jednotlivého zaměstnance ze souboru
+    @Override
+    public Zamestnanec nacistZamestnanceZeSouboru(String nazevSouboru, List<Zamestnanec> existujici) {
+        try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(nazevSouboru))) {
+            String line = reader.readLine();
+            if (line == null || line.trim().isEmpty()) {
+                System.out.println("Soubor je prázdný.");
+                return null;
+            }
+
+            String[] parts = line.split("\\|");
+            if (parts.length < 5) {
+                System.out.println("Neplatný formát souboru.");
+                return null;
+            }
+
+            int id = Integer.parseInt(parts[0].trim());
+            String jmeno = parts[1].trim();
+            String prijmeni = parts[2].trim();
+            int rokNarozeni = Integer.parseInt(parts[3].trim());
+            String skupina = parts[4].trim();
+
+            Zamestnanec z = switch (skupina) {
+                case "Datový analytik" -> new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
+                case "Bezpečnostní specialista" -> new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
+                default -> null;
+            };
+
+            if (z != null) {
+                System.out.println("Zaměstnanec úspěšně načten z \"" + nazevSouboru + "\".");
+            }
+            return z;
+        } catch (java.io.IOException e) {
+            System.out.println("Chyba při načítání ze souboru: " + e.getMessage());
+            return null;
+        }
+    }
+
+    // Uložení jednotlivého zaměstnance do souboru
+    @Override
+    public void ulozitZamestnanceDoSouboru(Zamestnanec zamestnanec, String nazevSouboru) {
+        try (java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter(nazevSouboru))) {
+            writer.println(zamestnanec.getId() + "|" + zamestnanec.getJmeno() + "|" 
+                + zamestnanec.getPrijmeni() + "|" + zamestnanec.getRokNarozeni() + "|" + zamestnanec.getSkupina());
+            System.out.println("Zaměstnanec úspěšně uložen do \"" + nazevSouboru + "\".");
+        } catch (java.io.IOException e) {
+            System.out.println("Chyba při ukládání do souboru: " + e.getMessage());
+        }
     }
 }

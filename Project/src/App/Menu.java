@@ -1,3 +1,4 @@
+// Menu.java - úprava
 package App;
 
 import java.util.Scanner;
@@ -6,18 +7,18 @@ import Zamestnanec.*;
 
 public class Menu {
     private final Databaze databaze;
-    private final SqlManager sqlManager;
+    private final DataManager dataManager;
     private final Scanner scanner;
 
-    public Menu(Databaze databaze, SqlManager sqlManager) {
+    public Menu(Databaze databaze, DataManager dataManager) {
         this.databaze = databaze;
-        this.sqlManager = sqlManager;
+        this.dataManager = dataManager;
         this.scanner = new Scanner(System.in);
     }
 
     public void run() {
-        System.out.println("Načítám data z SQL databáze...");
-        sqlManager.nacistData(databaze);
+        System.out.println("Načítám data...");
+        dataManager.nacistData(databaze);
 
         boolean running = true;
         while (running) {
@@ -33,13 +34,15 @@ public class Menu {
                 case 6 -> databaze.vypisAbecedne();
                 case 7 -> databaze.vypisStatistiky();
                 case 8 -> databaze.vypisPoctySkupin();
+                case 9 -> nacistZamestnanceZeSouboru();
+                case 10 -> ulozitZamestnanceDoSouboru();
                 case 0 -> running = false;
                 default -> System.out.println("Neplatná volba, zkuste znovu.");
             }
         }
 
-        System.out.println("Ukládám data do SQL databáze...");
-        sqlManager.ulozitData(databaze);
+        System.out.println("Ukládám data...");
+        dataManager.ulozitData(databaze);
         System.out.println("Program ukončen.");
     }
 
@@ -54,6 +57,8 @@ public class Menu {
                 6. Výpis všech zaměstnanců abecedně
                 7. Výpis statistik o zaměstnancích
                 8. Výpis počtu zaměstnanců v jednotlivých skupinách
+                9. Načtení zaměstnance ze souboru
+                10. Uložení zaměstnance do souboru
                 0. Ukončit program
                  """);
     }
@@ -63,6 +68,7 @@ public class Menu {
         System.out.println("Vyberte skupinu: ");
         System.out.println("1. Datový analytik");
         System.out.println("2. Bezpečnostní specialista");
+        System.out.println("3. Načtení zaměstanance ze souboru");
         System.out.print("Skupina: ");
         int skupina = nactiCislo();
 
@@ -90,7 +96,7 @@ public class Menu {
         System.out.print("ID zaměstnance: ");
         int idZamestnance = nactiCislo();
 
-        System.out.print("ID kolegu: ");
+        System.out.print("ID kolegy: ");
         int idKolegu = nactiCislo();
 
         System.out.print("Kvalita spolupráce: ");
@@ -152,10 +158,51 @@ public class Menu {
     private int nactiCislo() {
         while (true) {
             try {
+                if (!scanner.hasNextLine()) {
+                    return 0; // Konec vstupu
+                }
                 return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
                 System.out.print("Neplatný vstup, zadejte číslo: ");
             }
         }
+    }
+
+    private void nacistZamestnanceZeSouboru() {
+        System.out.println("\n--- Načtení zaměstnance ze souboru ---");
+        System.out.print("Zadejte název souboru: ");
+        String nazevSouboru = scanner.nextLine().trim();
+
+        if (nazevSouboru.isEmpty()) {
+            System.out.println("Název souboru nesmí být prázdný.");
+            return;
+        }
+
+        Zamestnanec zamestnanec = dataManager.nacistZamestnanceZeSouboru(nazevSouboru, databaze.getAll());
+        if (zamestnanec != null) {
+            databaze.pridatZamestnance(zamestnanec);
+        }
+    }
+
+    private void ulozitZamestnanceDoSouboru() {
+        System.out.println("\n--- Uložení zaměstnance do souboru ---");
+        System.out.print("ID zaměstnance: ");
+        int id = nactiCislo();
+
+        Zamestnanec zamestnanec = databaze.najdiPodleId(id);
+        if (zamestnanec == null) {
+            System.out.println("Zaměstnanec s ID " + id + " neexistuje.");
+            return;
+        }
+
+        System.out.print("Zadejte název souboru: ");
+        String nazevSouboru = scanner.nextLine().trim();
+
+        if (nazevSouboru.isEmpty()) {
+            System.out.println("Název souboru nesmí být prázdný.");
+            return;
+        }
+
+        dataManager.ulozitZamestnanceDoSouboru(zamestnanec, nazevSouboru);
     }
 }
