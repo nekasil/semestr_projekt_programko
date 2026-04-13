@@ -179,11 +179,16 @@ public class SqlManager implements DataManager {
             int rokNarozeni = Integer.parseInt(parts[3].trim());
             String skupina = parts[4].trim();
 
-            Zamestnanec z = switch (skupina) {
-                case "Datový analytik" -> new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
-                case "Bezpečnostní specialista" -> new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
-                default -> null;
-            };
+            Zamestnanec z = null;
+            switch (skupina) {
+                case "Datový analytik" ->
+                    z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
+                case "Bezpečnostní specialista" ->
+                    z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
+                default -> {
+                    System.out.println("Neznámá skupina: " + skupina);
+                }
+            }
 
             if (z != null) {
                 System.out.println("Zaměstnanec úspěšně načten z \"" + nazevSouboru + "\".");

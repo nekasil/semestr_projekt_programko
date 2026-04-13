@@ -67,11 +67,11 @@ public abstract class Zamestnanec {
     // Metoda na vytvaranie zamestnancov
 
     public static Zamestnanec vytvorZamestnance(int skupina, String jmeno, String prijmeni, int rokNarozeni, List<Zamestnanec> databaze) {
-        return switch (skupina) {
-            case 1 -> new DataAnalytik(jmeno, prijmeni, rokNarozeni, databaze);
-            case 2 -> new BezpSpecialista(jmeno, prijmeni, rokNarozeni);
-            default -> throw new IllegalArgumentException("Neplatná skupina: " + skupina);
-        };
+        switch (skupina) {
+            case 1 : return new DataAnalytik(jmeno, prijmeni, rokNarozeni, databaze);
+            case 2 : return new BezpSpecialista(jmeno, prijmeni, rokNarozeni);
+            default : throw new IllegalArgumentException("Neplatná skupina: " + skupina);
+        }
     }
 
     // -- Správa spolupráce --

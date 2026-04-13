@@ -99,23 +99,22 @@ public class Menu {
         System.out.print("ID kolegy: ");
         int idKolegu = nactiCislo();
 
-        System.out.print("Kvalita spolupráce: ");
+        System.out.println("Kvalita spolupráce: ");
         System.out.println("1. Špatná");
         System.out.println("2. Průměrná");
         System.out.println("3. Dobrá");
         System.out.print("Volba: ");
         int volbaUrovne = nactiCislo();
 
-        UrovenSpoluprace uroven = switch (volbaUrovne) {
-            case 1 -> UrovenSpoluprace.SPATNA;
-            case 2 -> UrovenSpoluprace.PRUMERNA;
-            case 3 -> UrovenSpoluprace.DOBRA;
-            default -> null;
-        };
-
-        if (uroven == null) {
-            System.out.println("Neplatná volba kvality spolupráce.");
-            return;
+        UrovenSpoluprace uroven = null;
+        switch (volbaUrovne) {
+            case 1 -> uroven = UrovenSpoluprace.SPATNA;
+            case 2 -> uroven = UrovenSpoluprace.PRUMERNA;
+            case 3 -> uroven = UrovenSpoluprace.DOBRA;
+            default -> {
+                System.out.println("Neplatná volba kvality spolupráce.");
+                return;
+            }
         }
 
         databaze.pridatSpolupraci(idZamestnance, idKolegu, uroven);
