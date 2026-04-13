@@ -90,6 +90,15 @@ public abstract class Zamestnanec {
     public void odebratSpolupraci(int idKolegu) {
         this.spoluprace.removeIf(s -> s.getIdKolegu() == idKolegu);
     }
+    
+    public boolean existujeSpolupraceS(int idKolegu) {
+        for (Spoluprace s : this.spoluprace) {
+            if (s.getIdKolegu() == idKolegu) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public List<Spoluprace> getSpoluprace() {
         return this.spoluprace;
