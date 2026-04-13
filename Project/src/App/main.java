@@ -14,6 +14,7 @@ public class main {
         
         int volba = 0;
         DataManager dataManager = null;
+        boolean isSqlMode = false;
         
         while (true) {
             System.out.println("Zvolte režim");
@@ -36,16 +37,18 @@ public class main {
             if (volba == 1) {
                 dataManager = new SqlManager();
                 ((SqlManager) dataManager).inicializace();
+                isSqlMode = true;
                 break;
             } else if (volba == 2) {
                 dataManager = new FileManager();
+                isSqlMode = false;
                 break;
             } else {
                 System.out.println("Neplatná volba, zkuste znovu.\n");
             }
         }
         
-        Menu menu = new Menu(databaze, dataManager);
+        Menu menu = new Menu(databaze, dataManager, isSqlMode);
         menu.run();
         scanner.close();
     }

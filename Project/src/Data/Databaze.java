@@ -24,9 +24,17 @@ public class Databaze {
             System.out.println("Nelze přidat spolupráci sám se sebou.");
             return;
         }
+        
+        // Kontrola, zda spolupráce již neexistuje
+        if (z.existujeSpolupraceS(idKolegu)) {
+            System.out.println("Spolupráce mezi těmito zaměstnanci již existuje.");
+            return;
+        }
 
+        // Přidání spolupráce oběma směry
         z.pridatSpolupraci(new Spoluprace(idKolegu, uroven));
-        System.out.println("Přidána spolupráce");
+        kolega.pridatSpolupraci(new Spoluprace(idZamestnance, uroven));
+        System.out.println("Přidána vzájemná spolupráce");
     }
 
     // c) Odebrani zamestnance

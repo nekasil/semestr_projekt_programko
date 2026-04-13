@@ -9,11 +9,13 @@ public class Menu {
     private final Databaze databaze;
     private final DataManager dataManager;
     private final Scanner scanner;
+    private final boolean isSqlMode;  // Přidáme sledování režimu
 
-    public Menu(Databaze databaze, DataManager dataManager) {
+    public Menu(Databaze databaze, DataManager dataManager, boolean isSqlMode) {
         this.databaze = databaze;
         this.dataManager = dataManager;
         this.scanner = new Scanner(System.in);
+        this.isSqlMode = isSqlMode;
     }
 
     public void run() {
@@ -41,8 +43,13 @@ public class Menu {
             }
         }
 
-        System.out.println("Ukládám data...");
-        dataManager.ulozitData(databaze);
+        // Ukládáme jen v SQL režimu
+        if (isSqlMode) {
+            System.out.println("Ukládám data...");
+            dataManager.ulozitData(databaze);
+        } else {
+            System.out.println("Data se neukládají (režim bez SQL).");
+        }
         System.out.println("Program ukončen.");
     }
 
