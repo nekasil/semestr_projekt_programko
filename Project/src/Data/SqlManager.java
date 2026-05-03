@@ -1,6 +1,5 @@
 package Data;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import Zamestnanec.*;
@@ -46,15 +45,19 @@ public class SqlManager implements DataManager {
         try (Connection conn = connect()) {
             conn.setAutoCommit(false);
 
-            vymazatVsechno(conn);
-            ulozitZamestnance(conn, databaze.getAll());
-            ulozitVsechnySpoluprace(conn, databaze.getAll());
+            try {
+                vymazatVsechno(conn);
+                ulozitZamestnance(conn, databaze.getAll());
+                ulozitVsechnySpoluprace(conn, databaze.getAll());
+                conn.commit();
+                System.out.println("Data úspešne uložena do SQL databáze.");
+            } catch (SQLException e) {
+                conn.rollback();
+                System.out.println("Chyba při ukládání dat, zmeny boli vrátené: " + e.getMessage());
+            }
 
-            conn.commit();
-            System.out.println("Data úspešne uložena do SQL databáze.");
-        
         } catch (SQLException e) {
-            System.out.println("Chyba při ukládání dat: " + e.getMessage());
+            System.out.println("Chyba při připojení k databázi: " + e.getMessage());
         }
     }
 
@@ -62,11 +65,7 @@ public class SqlManager implements DataManager {
     public void nacistData(Databaze databaze) {
         try (Connection conn = connect()) {
 
-            List<Zamestnanec> zamestnanci = nacteniZamestnancu(conn, databaze.getAll());
-            for (Zamestnanec z : zamestnanci) {
-                databaze.pridatZamestnance(z);
-            }
-
+            nacteniZamestnancu(conn, databaze);
             nacteniSpolupraci(conn, databaze);
             System.out.println("Data úspešne načtena z SQL databáze.");
 
@@ -77,7 +76,7 @@ public class SqlManager implements DataManager {
 
     // Pomocne - ukladani
     private void ulozitZamestnance(Connection conn, List<Zamestnanec> zamestnanci) throws SQLException {
-        String sql = "INSERT INTO zamestnanci (id, jmeno, prijmeni, rokNarozeni, skupina) " + "VALUES (?, ?, ?, ? ,?)";
+        String sql = "INSERT INTO zamestnanci (id, jmeno, prijmeni, rokNarozeni, skupina) VALUES (?, ?, ?, ? ,?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (Zamestnanec z : zamestnanci) {
@@ -93,7 +92,7 @@ public class SqlManager implements DataManager {
     }
 
     private void ulozitVsechnySpoluprace(Connection conn, List<Zamestnanec> zamestnanci) throws SQLException {
-        String sql = "INSERT INTO spoluprace (id_zamestnance, id_kolegu, uroven) " + "VALUES (?, ?, ?)";
+        String sql = "INSERT INTO spoluprace (id_zamestnance, id_kolegu, uroven) VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (Zamestnanec z : zamestnanci) {
@@ -109,14 +108,14 @@ public class SqlManager implements DataManager {
     }
 
     private void vymazatVsechno(Connection conn) throws SQLException {
-        conn.createStatement().execute("DELETE FROM spoluprace");
-        conn.createStatement().execute("DELETE FROM zamestnanci");
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM spoluprace");
+            stmt.execute("DELETE FROM zamestnanci");
+        }
     }
 
     // Pomocne - nacteni
-    private List<Zamestnanec> nacteniZamestnancu(Connection conn, List<Zamestnanec> existujici) throws SQLException {
-        List<Zamestnanec> zoznam = new ArrayList<>();
-
+    private void nacteniZamestnancu(Connection conn, Databaze databaze) throws SQLException {
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM zamestnanci")) {
 
@@ -126,17 +125,27 @@ public class SqlManager implements DataManager {
                 String prijmeni = rs.getString("prijmeni");
                 int rokNarozeni = rs.getInt("rokNarozeni");
                 String skupina = rs.getString("skupina");
-
+                /*
                 Zamestnanec z = switch (skupina) {
-                    case "Datový analytik" -> new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
+                    case "Datový analytik" -> new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, databaze.getAll());
                     case "Bezpečnostní specialista" -> new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
                     default -> throw new SQLException("Neznámá skupina: " + skupina);
                 };
-
-                zoznam.add(z);
+                */
+                Zamestnanec z;
+                switch (skupina) {
+                    case "Datový analytik":
+                        z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, databaze.getAll());
+                        break;
+                    case "Bezpečnostní specialista":
+                        z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
+                        break;
+                    default:
+                        throw new SQLException("Neznámá skupina: " + skupina);
+                }
+                databaze.pridatZamestnance(z);
             }
         }
-        return zoznam;
     }
     
     private void nacteniSpolupraci(Connection conn, Databaze databaze) throws SQLException {
@@ -185,9 +194,8 @@ public class SqlManager implements DataManager {
                     z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
                 case "Bezpečnostní specialista" ->
                     z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
-                default -> {
+                default -> 
                     System.out.println("Neznámá skupina: " + skupina);
-                }
             }
 
             if (z != null) {
