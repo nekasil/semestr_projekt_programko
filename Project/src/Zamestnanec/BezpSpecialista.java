@@ -2,10 +2,10 @@ package Zamestnanec;
 
 public class BezpSpecialista extends Zamestnanec {
 
-    private static final int    HRANICA_MALO_SPOLUPRACI = 2;
-    private static final int    HRANICA_VELA_SPOLUPRACI = 10;
-    private static final double HRANICA_NIZKA_KVALITA = 1.5;
-    private static final double HRANICA_VYSOKA_KVALITA = 2.5;
+    private static final int    HRANICE_HODNE_SPOLUPRACI = 2;
+    private static final int    HRANICE_VELA_SPOLUPRACI = 10;
+    private static final double HRANICE_NIZKA_KVALITA = 1.5;
+    private static final double HRANICE_VYSOKA_KVALITA = 2.5;
     
     public BezpSpecialista(String jmeno, String prijmeni, int rokNarozeni) {
         super(jmeno, prijmeni, rokNarozeni);
