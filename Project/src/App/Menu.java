@@ -21,6 +21,7 @@ public class Menu {
     public void run() {
         System.out.println("Načítám data...");
         dataManager.nacistData(databaze);
+        databaze.initializovatDatabazi();
 
         boolean running = true;
         while (running) {

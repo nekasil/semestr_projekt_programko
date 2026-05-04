@@ -28,6 +28,16 @@ public class DataAnalytik extends Zamestnanec {
      */
     @Override
     public void dovednost() {
+        if (databaze == null) {
+            System.out.println("Chyba: Databáze zaměstnanců není inicializována!");
+            return;
+        }
+
+        if (getSpoluprace().isEmpty()) {
+            System.out.println("Nemám žádné spolupracovníky.");
+            return;
+        }
+
         int maxSpolecnych = -1;
         Zamestnanec najlepsi = null;
 
@@ -54,13 +64,10 @@ public class DataAnalytik extends Zamestnanec {
             }
         }
 
-        System.out.println("\n--- Dovednost: Datový analytik ---");
-        if (najlepsi == null) {
-            System.out.println("Nemám žádné kolegy nebo se nenašla shoda.");
+        if (najlepsi != null) {
+            System.out.println(najlepsi.getJmeno() + " " + najlepsi.getPrijmeni() + " - " + maxSpolecnych + " společných spolupracovníků");
         } else {
-            System.out.println("Kolega s nejvíce společnými spolupracovníky:");
-            System.out.println(najlepsi);
-            System.out.println("Počet společných spolupracovníků: " + maxSpolecnych);
+            System.out.println("Žádný spolupracovník nemá se mnou společné kolegy.");
         }
     }
 
