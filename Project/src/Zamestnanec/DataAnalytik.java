@@ -50,12 +50,12 @@ public class DataAnalytik extends Zamestnanec {
 
             if (pocetSpolecnych > maxSpolecnych) {
                 maxSpolecnych = pocetSpolecnych;
-                nejlepsi = kolega;
+                najlepsi = kolega;
             }
         }
 
         System.out.println("\n--- Dovednost: Datový analytik ---");
-        if (nejlepsi == null) {
+        if (najlepsi == null) {
             System.out.println("Nemám žádné kolegy nebo se nenašla shoda.");
         } else {
             System.out.println("Kolega s nejvíce společnými spolupracovníky:");
