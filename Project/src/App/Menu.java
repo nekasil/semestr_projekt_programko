@@ -96,6 +96,11 @@ public class Menu {
             return;
         }
 
+        if (rokNarozeni < 1000 || rokNarozeni > 9999) {
+            System.out.println("Rok narození musí mít právě 4 číslice!");
+            return;
+        }
+
         if (jmeno.isEmpty() || prijmeni.isEmpty()) {
             System.out.println("Jméno a příjmení nesmí být prázdné.");
             return;
