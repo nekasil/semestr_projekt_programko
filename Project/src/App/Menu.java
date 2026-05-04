@@ -88,7 +88,13 @@ public class Menu {
         String prijmeni = scanner.nextLine().trim();
 
         System.out.print("Rok narození: ");
-        int rokNarozeni = nactiCislo();
+        int rokNarozeni = 0;
+        try {
+            rokNarozeni = nactiCislo();
+        } catch (Exception e) {
+            System.out.println("Chyba: Zadejte prosím platné číslo!");
+            return;
+        }
 
         if (jmeno.isEmpty() || prijmeni.isEmpty()) {
             System.out.println("Jméno a příjmení nesmí být prázdné.");
