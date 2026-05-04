@@ -1,8 +1,18 @@
 package Data;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
-import Zamestnanec.*;
+import Zamestnanec.BezpSpecialista;
+import Zamestnanec.DataAnalytik;
+import Zamestnanec.Spoluprace;
+import Zamestnanec.UrovenSpoluprace;
+import Zamestnanec.Zamestnanec;
 
 public class SqlManager implements DataManager {
 
@@ -168,50 +178,60 @@ public class SqlManager implements DataManager {
 
     // Načtení jednotlivého zaměstnance ze souboru
     @Override
-    public Zamestnanec nacistZamestnanceZeSouboru(String nazevSouboru, List<Zamestnanec> existujici) {
+    public List<Zamestnanec> nacistZamestnanceZeSouboru(String nazevSouboru, List<Zamestnanec> existujici) {
+        List<Zamestnanec> vysledok = new ArrayList<>();
         try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(nazevSouboru))) {
-            String line = reader.readLine();
-            if (line == null || line.trim().isEmpty()) {
+            String line;
+            boolean prazdny = true;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+
+                prazdny = false;
+
+                String[] parts = line.split("\\|");
+                if (parts.length < 5) {
+                    System.out.println("Neplatný formát souboru na riadku: " + line);
+                    continue;
+                }
+
+                int id = Integer.parseInt(parts[0].trim());
+                String jmeno = parts[1].trim();
+                String prijmeni = parts[2].trim();
+                int rokNarozeni = Integer.parseInt(parts[3].trim());
+                String skupina = parts[4].trim();
+
+                Zamestnanec z = null;
+                switch (skupina) {
+                    case "Datový analytik":
+                        z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
+                        break;
+                    case "Bezpečnostní specialista":
+                        z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
+                        break;
+                    default:
+                        System.out.println("Neznámá skupina: " + skupina);
+                }
+
+                if (z != null) {
+                    vysledok.add(z);
+                    System.out.println("Zaměstnanec úspěšně načten z \"" + nazevSouboru + "\".");
+                }
+            }
+
+            if (prazdny) {
                 System.out.println("Soubor je prázdný.");
-                return null;
             }
-
-            String[] parts = line.split("\\|");
-            if (parts.length < 5) {
-                System.out.println("Neplatný formát souboru.");
-                return null;
-            }
-
-            int id = Integer.parseInt(parts[0].trim());
-            String jmeno = parts[1].trim();
-            String prijmeni = parts[2].trim();
-            int rokNarozeni = Integer.parseInt(parts[3].trim());
-            String skupina = parts[4].trim();
-
-            Zamestnanec z = null;
-            switch (skupina) {
-                case "Datový analytik" ->
-                    z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
-                case "Bezpečnostní specialista" ->
-                    z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
-                default -> 
-                    System.out.println("Neznámá skupina: " + skupina);
-            }
-
-            if (z != null) {
-                System.out.println("Zaměstnanec úspěšně načten z \"" + nazevSouboru + "\".");
-            }
-            return z;
+            
         } catch (java.io.IOException e) {
             System.out.println("Chyba při načítání ze souboru: " + e.getMessage());
-            return null;
         }
+        return vysledok;
     }
 
     // Uložení jednotlivého zaměstnance do souboru
     @Override
     public void ulozitZamestnanceDoSouboru(Zamestnanec zamestnanec, String nazevSouboru) {
-        try (java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter(nazevSouboru))) {
+        try (java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter(nazevSouboru, true))) {
             writer.println(zamestnanec.getId() + "|" + zamestnanec.getJmeno() + "|" 
                 + zamestnanec.getPrijmeni() + "|" + zamestnanec.getRokNarozeni() + "|" + zamestnanec.getSkupina());
             System.out.println("Zaměstnanec úspěšně uložen do \"" + nazevSouboru + "\".");

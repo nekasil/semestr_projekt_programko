@@ -4,7 +4,7 @@ package App;
 import java.util.Scanner;
 import Data.*;
 import Zamestnanec.*;
-
+import java.util.List;
 public class Menu {
     private final Databaze databaze;
     private final DataManager dataManager;
@@ -216,8 +216,8 @@ public class Menu {
             return;
         }
 
-        Zamestnanec zamestnanec = dataManager.nacistZamestnanceZeSouboru(nazevSouboru, databaze.getAll());
-        if (zamestnanec != null) {
+        List<Zamestnanec> nacteni = dataManager.nacistZamestnanceZeSouboru(nazevSouboru, databaze.getAll());
+        for (Zamestnanec zamestnanec : nacteni) {
             databaze.pridatZamestnance(zamestnanec);
         }
     }

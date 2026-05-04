@@ -50,11 +50,13 @@ public class FileManager implements DataManager {
 
                 Zamestnanec z = null;
                 switch (skupina) {
-                    case "Datový analytik" ->
+                    case "Datový analytik":
                         z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, databaze.getAll());
-                    case "Bezpečnostní specialista" ->
+                        break;
+                    case "Bezpečnostní specialista":
                         z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
-                    default -> {
+                        break;
+                    default: {
                         System.out.println("Neznámá skupina: " + skupina);
                     }
                 }
@@ -102,25 +104,71 @@ public class FileManager implements DataManager {
     }
 
     // Načtení jednotlivého zaměstnance ze souboru
-    public Zamestnanec nacistZamestnanceZeSouboru(String nazevSouboru, List<Zamestnanec> existujici) {
+    public List<Zamestnanec> nacistZamestnanceZeSouboru(String nazevSouboru, List<Zamestnanec> existujici) {
+        List<Zamestnanec> nacitani = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(nazevSouboru))) {
-            String line = reader.readLine();
-            if (line == null || line.trim().isEmpty()) {
-                System.out.println("Soubor je prázdný.");
-                return null;
+            String line;
+            boolean prazdny = true;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                
+                prazdny = false;
+
+                String[] parts = line.split("\\|");
+                if (parts.length < 5) {
+                    System.out.println("Neplatný formát souboru na riadku: " + line);
+                    continue;
+                }
+
+                int id = Integer.parseInt(parts[0].trim());
+                String jmeno = parts[1].trim();
+                String prijmeni = parts[2].trim();
+                int rokNarozeni = Integer.parseInt(parts[3].trim());
+                String skupina = parts[4].trim();
+
+                Zamestnanec z = null;
+                switch (skupina) {
+                    case "Datový analytik" ->
+                        z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
+                    case "Bezpečnostní specialista" ->
+                        z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
+                    default -> {
+                        System.out.println("Neznámá skupina: " + skupina);
+                    }
+                }
+
+                if (z != null) {
+                    nacitani.add(z);
+                    System.out.println("Zaměstnanec úspěšně načten z \"" + nazevSouboru + "\".");
+                }
             }
+
+            if (prazdny) {
+                System.out.println("Soubor je prázdný.");
+            }
+            
+        } catch (IOException e) {
+            System.out.println("Chyba při načítání ze souboru: " + e.getMessage());
+            return null;
+        }
+        return nacitani;
+    }
+    /*
+    public List<Zamestnanec> nacistZamestnanceZeSouboru(String nazevSouboru, List<Zamestnanec> existujici) {
+    List<Zamestnanec> nacitani = new ArrayList<>();
+    try (BufferedReader reader = new BufferedReader(new FileReader(nazevSouboru))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (line.trim().isEmpty()) continue;
 
             String[] parts = line.split("\\|");
-            if (parts.length < 5) {
-                System.out.println("Neplatný formát souboru.");
-                return null;
-            }
+            if (parts.length < 5) continue;
 
-            int id = Integer.parseInt(parts[0].trim());
-            String jmeno = parts[1].trim();
-            String prijmeni = parts[2].trim();
-            int rokNarozeni = Integer.parseInt(parts[3].trim());
-            String skupina = parts[4].trim();
+            int id              = Integer.parseInt(parts[0].trim());
+            String jmeno        = parts[1].trim();
+            String prijmeni     = parts[2].trim();
+            int rokNarozeni     = Integer.parseInt(parts[3].trim());
+            String skupina      = parts[4].trim();
 
             Zamestnanec z = null;
             switch (skupina) {
@@ -128,24 +176,23 @@ public class FileManager implements DataManager {
                     z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
                 case "Bezpečnostní specialista" ->
                     z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
-                default -> {
+                default ->
                     System.out.println("Neznámá skupina: " + skupina);
-                }
             }
 
-            if (z != null) {
-                System.out.println("Zaměstnanec úspěšně načten z \"" + nazevSouboru + "\".");
-            }
-            return z;
-        } catch (IOException e) {
-            System.out.println("Chyba při načítání ze souboru: " + e.getMessage());
-            return null;
+            if (z != null) nacitani.add(z);
         }
+        System.out.println("Načteno " + nacitani.size() + " zaměstnanců ze souboru.");
+    } catch (IOException e) {
+        System.out.println("Chyba při načítání ze souboru: " + e.getMessage());
     }
+    return nacitani;
+}
+     */
 
     // Uložení jednotlivého zaměstnance do souboru
     public void ulozitZamestnanceDoSouboru(Zamestnanec zamestnanec, String nazevSouboru) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(nazevSouboru))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(nazevSouboru, true))) {
             writer.println(zamestnanec.getId() + "|" + zamestnanec.getJmeno() + "|" 
                 + zamestnanec.getPrijmeni() + "|" + zamestnanec.getRokNarozeni() + "|" + zamestnanec.getSkupina());
             System.out.println("Zaměstnanec úspěšně uložen do \"" + nazevSouboru + "\".");

@@ -8,8 +8,9 @@ import Data.FileManager;
 import java.util.Scanner;
 
 public class main {
-    public static void Main(String[] args) {
+    public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
+            //Scanner scanner = new Scanner(System.in);
             Databaze databaze = new Databaze();
             
             int volba = 0;
