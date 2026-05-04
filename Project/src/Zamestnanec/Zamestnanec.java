@@ -87,6 +87,17 @@ public abstract class Zamestnanec {
         
     }
 
+    // Úprava úrovně existující spolupráce
+    public boolean upravitSpolupraci(int idKolegu, UrovenSpoluprace novaUroven) {
+        for (Spoluprace s : this.spoluprace) {
+            if (s.getIdKolegu() == idKolegu) {
+                s.setUroven(novaUroven);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void odebratSpolupraci(int idKolegu) {
         this.spoluprace.removeIf(s -> s.getIdKolegu() == idKolegu);
     }

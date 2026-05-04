@@ -36,8 +36,9 @@ public class Menu {
                 case 6 -> databaze.vypisAbecedne();
                 case 7 -> databaze.vypisStatistiky();
                 case 8 -> databaze.vypisPoctySkupin();
-                case 9 -> nacistZamestnanceZeSouboru();
-                case 10 -> ulozitZamestnanceDoSouboru();
+                case 9 -> upravitSpolupraci();
+                case 10 -> nacistZamestnanceZeSouboru();
+                case 11 -> ulozitZamestnanceDoSouboru();
                 case 0 -> running = false;
                 default -> System.out.println("Neplatná volba, zkuste znovu.");
             }
@@ -64,8 +65,9 @@ public class Menu {
                 6. Výpis všech zaměstnanců abecedně
                 7. Výpis statistik o zaměstnancích
                 8. Výpis počtu zaměstnanců v jednotlivých skupinách
-                9. Načtení zaměstnance ze souboru
-                10. Uložení zaměstnance do souboru
+                9. Upravit ohodnocení existující spolupráce
+                10. Načtení zaměstnance ze souboru
+                11. Uložení zaměstnance do souboru
                 0. Ukončit program
                  """);
     }
@@ -106,25 +108,43 @@ public class Menu {
         System.out.print("ID kolegy: ");
         int idKolegu = nactiCislo();
 
-        System.out.println("Kvalita spolupráce: ");
+        System.out.println("\nKvalita spolupráce z pohledu prvního zaměstnance: ");
         System.out.println("1. Špatná");
         System.out.println("2. Průměrná");
         System.out.println("3. Dobrá");
         System.out.print("Volba: ");
-        int volbaUrovne = nactiCislo();
+        int volbaUrovne1 = nactiCislo();
 
-        UrovenSpoluprace uroven = null;
-        switch (volbaUrovne) {
-            case 1 -> uroven = UrovenSpoluprace.SPATNA;
-            case 2 -> uroven = UrovenSpoluprace.PRUMERNA;
-            case 3 -> uroven = UrovenSpoluprace.DOBRA;
+        UrovenSpoluprace uroven1 = null;
+        switch (volbaUrovne1) {
+            case 1 -> uroven1 = UrovenSpoluprace.SPATNA;
+            case 2 -> uroven1 = UrovenSpoluprace.PRUMERNA;
+            case 3 -> uroven1 = UrovenSpoluprace.DOBRA;
             default -> {
                 System.out.println("Neplatná volba kvality spolupráce.");
                 return;
             }
         }
 
-        databaze.pridatSpolupraci(idZamestnance, idKolegu, uroven);
+        System.out.println("\nKvalita spolupráce z pohledu druhého zaměstnance: ");
+        System.out.println("1. Špatná");
+        System.out.println("2. Průměrná");
+        System.out.println("3. Dobrá");
+        System.out.print("Volba: ");
+        int volbaUrovne2 = nactiCislo();
+
+        UrovenSpoluprace uroven2 = null;
+        switch (volbaUrovne2) {
+            case 1 -> uroven2 = UrovenSpoluprace.SPATNA;
+            case 2 -> uroven2 = UrovenSpoluprace.PRUMERNA;
+            case 3 -> uroven2 = UrovenSpoluprace.DOBRA;
+            default -> {
+                System.out.println("Neplatná volba kvality spolupráce.");
+                return;
+            }
+        }
+
+        databaze.pridatSpolupraci(idZamestnance, idKolegu, uroven1, uroven2);
     }
 
     private void odebratZamestnance() {
@@ -210,5 +230,34 @@ public class Menu {
         }
 
         dataManager.ulozitZamestnanceDoSouboru(zamestnanec, nazevSouboru);
+    }
+
+    private void upravitSpolupraci() {
+        System.out.println("\n--- Upravit ohodnocení spolupráce ---");
+        System.out.print("ID zaměstnance (který upravuje): ");
+        int idZamestnance = nactiCislo();
+
+        System.out.print("ID kolegy: ");
+        int idKolegu = nactiCislo();
+
+        System.out.println("\nNová kvalita spolupráce: ");
+        System.out.println("1. Špatná");
+        System.out.println("2. Průměrná");
+        System.out.println("3. Dobrá");
+        System.out.print("Volba: ");
+        int volbaUrovne = nactiCislo();
+
+        UrovenSpoluprace novaUroven = null;
+        switch (volbaUrovne) {
+            case 1 -> novaUroven = UrovenSpoluprace.SPATNA;
+            case 2 -> novaUroven = UrovenSpoluprace.PRUMERNA;
+            case 3 -> novaUroven = UrovenSpoluprace.DOBRA;
+            default -> {
+                System.out.println("Neplatná volba kvality spolupráce.");
+                return;
+            }
+        }
+
+        databaze.upravitSpolupraci(idZamestnance, idKolegu, novaUroven);
     }
 }
