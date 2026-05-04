@@ -221,12 +221,14 @@ public class Databaze {
         return zamestnanci.isEmpty();
     }
 
-    // Nastaví odkaz na databázi pro všechny DataAnalytiky (kvůli dovednosti)
+    // Nastaví odkaz na databázi pro všechny DataAnalytiky a BezpSpecialisty (kvůli dovednosti)
     public void initializovatDatabazi() {
         List<Zamestnanec> vsichni = new ArrayList<>(zamestnanci.values());
         for (Zamestnanec z : vsichni) {
             if (z instanceof DataAnalytik) {
                 ((DataAnalytik) z).nastavitDatabazi(vsichni);
+            } else if (z instanceof BezpSpecialista) {
+                ((BezpSpecialista) z).nastavitDatabazi(vsichni);
             }
         }
     }

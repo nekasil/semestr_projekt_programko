@@ -7,9 +7,17 @@ public class DataAnalytik extends Zamestnanec {
 
     private List<Zamestnanec> databaze;
 
+    public DataAnalytik(String jmeno, String prijmeni, int rokNarozeni) {
+        super(jmeno, prijmeni, rokNarozeni);
+    }
+
     public DataAnalytik(String jmeno, String prijmeni, int rokNarozeni, List<Zamestnanec> databaze) {
         super(jmeno, prijmeni, rokNarozeni);
         this.databaze = databaze;
+    }
+
+    public DataAnalytik(int id, String jmeno, String prijmeni, int rokNarozeni) {
+        super(id, jmeno, prijmeni, rokNarozeni);
     }
 
     public DataAnalytik(int id, String jmeno, String prijmeni, int rokNarozeni, List<Zamestnanec> databaze) {
