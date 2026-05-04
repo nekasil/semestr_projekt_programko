@@ -37,25 +37,25 @@ public class BezpSpecialista extends Zamestnanec {
         double prumer = getPriemernaKvalita();
 
         double rizikoKontaktov;
-        if (pocet <= HRANICA_MALO_SPOLUPRACI) {
-            rizikoKontaktov = (double) pocet / HRANICA_MALO_SPOLUPRACI * 20.0;
-        } else if (pocet <= HRANICA_VELA_SPOLUPRACI) {
-            rizikoKontaktov = 20.0 + (double)(pocet - HRANICA_MALO_SPOLUPRACI)
-                    / (HRANICA_VELA_SPOLUPRACI - HRANICA_MALO_SPOLUPRACI) * 20.0;
+        if (pocet <= HRANICE_MALO_SPOLUPRACI) {
+            rizikoKontaktov = (double) pocet / HRANICE_MALO_SPOLUPRACI * 20.0;
+        } else if (pocet <= HRANICE_VELA_SPOLUPRACI) {
+            rizikoKontaktov = 20.0 + (double)(pocet - HRANICE_MALO_SPOLUPRACI)
+                    / (HRANICE_VELA_SPOLUPRACI - HRANICE_MALO_SPOLUPRACI) * 20.0;
         } else {
-            rizikoKontaktov = 40.0 + Math.min(10.0, (pocet - HRANICA_VELA_SPOLUPRACI) * 0.5);
+            rizikoKontaktov = 40.0 + Math.min(10.0, (pocet - HRANICE_VELA_SPOLUPRACI) * 0.5);
         }
 
         double rizikoKvality;
         if (pocet == 0) {
             rizikoKvality = 0.0;
-        } else if (prumer <= HRANICA_NIZKA_KVALITA) {
+        } else if (prumer <= HRANICE_NIZKA_KVALITA) {
             rizikoKvality = 50.0;
-        } else if (prumer >= HRANICA_VYSOKA_KVALITA) {
+        } else if (prumer >= HRANICE_VYSOKA_KVALITA) {
             rizikoKvality = 5.0;
         } else {
-            double pomer = (prumer - HRANICA_VYSOKA_KVALITA) 
-                    / (HRANICA_NIZKA_KVALITA - HRANICA_VYSOKA_KVALITA);
+            double pomer = (prumer - HRANICE_VYSOKA_KVALITA) 
+                    / (HRANICE_NIZKA_KVALITA - HRANICE_VYSOKA_KVALITA);
             rizikoKvality = 5.0 + pomer * 45.0;
         }
 

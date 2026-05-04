@@ -1,3 +1,5 @@
+package Zamestnanec;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +27,13 @@ public class DataAnalytik extends Zamestnanec {
      * nejvíce společných spolupracovníků.
      */
     @Override
-    public void vykonatDovednost() {
-        int maxSpoloc = -1;
+    public void dovednost() {
+        int maxSpolecnych = -1;
         Zamestnanec najlepsi = null;
 
-        List<Integer> mojeIds = new ArrayList<>();
-        for (Spolupraca s : getSpolupracovnici()) {
-            mojeIds.add(s.getIdKolegu());
+        List<Integer> moeIdentifikatory = new ArrayList<>();
+        for (Spoluprace s : getSpoluprace()) {
+            moeIdentifikatory.add(s.getIdKolegu());
         }
 
         for (Spoluprace moje : getSpoluprace()) {
