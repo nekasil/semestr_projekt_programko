@@ -21,6 +21,7 @@ public class Menu {
     public void run() {
         System.out.println("Načítám data...");
         dataManager.nacistData(databaze);
+        databaze.initializovatDatabazi();
 
         boolean running = true;
         while (running) {
@@ -88,7 +89,18 @@ public class Menu {
         String prijmeni = scanner.nextLine().trim();
 
         System.out.print("Rok narození: ");
-        int rokNarozeni = nactiCislo();
+        int rokNarozeni = 0;
+        try {
+            rokNarozeni = nactiCislo();
+        } catch (Exception e) {
+            System.out.println("Chyba: Zadejte prosím platné číslo!");
+            return;
+        }
+
+        if (rokNarozeni < 1000 || rokNarozeni > 9999) {
+            System.out.println("Rok narození musí mít právě 4 číslice!");
+            return;
+        }
 
         if (jmeno.isEmpty() || prijmeni.isEmpty()) {
             System.out.println("Jméno a příjmení nesmí být prázdné.");

@@ -10,6 +10,7 @@ public class Databaze {
     // a) Přidání zaměstnance
     public void pridatZamestnance(Zamestnanec zamestnanec) {
         zamestnanci.put(zamestnanec.getId(), zamestnanec);
+        initializovatDatabazi(); // Aktualizuj databází pro všechny DataAnalytiky
         System.out.println("Přidán zaměstnanec: " + zamestnanec);
     }
 
@@ -218,5 +219,15 @@ public class Databaze {
 
     public boolean jePrazdna() {
         return zamestnanci.isEmpty();
+    }
+
+    // Nastaví odkaz na databázi pro všechny DataAnalytiky (kvůli dovednosti)
+    public void initializovatDatabazi() {
+        List<Zamestnanec> vsichni = new ArrayList<>(zamestnanci.values());
+        for (Zamestnanec z : vsichni) {
+            if (z instanceof DataAnalytik) {
+                ((DataAnalytik) z).nastavitDatabazi(vsichni);
+            }
+        }
     }
 }
