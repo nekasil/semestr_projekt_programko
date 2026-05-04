@@ -109,18 +109,10 @@ public class Databaze {
             return;
         }
 
-        String skupina = z.getSkupina();
-        System.out.println("\n=== Spuštění dovednosti pro skupinu: " + skupina + " ===");
+        System.out.println("\n=== Spuštění dovednosti zaměstnance: " + z.getJmeno() + " " + z.getPrijmeni() + " ===");
         
-        int pocet = 0;
-        for (Zamestnanec zamestnanec : zamestnanci.values()) {
-            if (zamestnanec.getSkupina().equals(skupina)) {
-                zamestnanec.dovednost();
-                pocet++;
-            }
-        }
-        
-        System.out.println("Dovednost spuštěna pro " + pocet + " zaměstnanců.");
+        // Polymorfismus - zavolá správnou dovednost podle typu zaměstnance
+        z.dovednost();
     }
 
     // f) abecedni vypis zamestnancu/
