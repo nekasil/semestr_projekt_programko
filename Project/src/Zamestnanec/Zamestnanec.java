@@ -69,7 +69,7 @@ public abstract class Zamestnanec {
     public static Zamestnanec vytvorZamestnance(int skupina, String jmeno, String prijmeni, int rokNarozeni, List<Zamestnanec> databaze) {
         switch (skupina) {
             case 1 : return new DataAnalytik(jmeno, prijmeni, rokNarozeni, databaze);
-            case 2 : return new BezpSpecialista(jmeno, prijmeni, rokNarozeni);
+            case 2 : return new BezpSpecialista(jmeno, prijmeni, rokNarozeni, databaze);
             default : throw new IllegalArgumentException("Neplatná skupina: " + skupina);
         }
     }

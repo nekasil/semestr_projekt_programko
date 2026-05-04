@@ -125,20 +125,14 @@ public class SqlManager implements DataManager {
                 String prijmeni = rs.getString("prijmeni");
                 int rokNarozeni = rs.getInt("rokNarozeni");
                 String skupina = rs.getString("skupina");
-                /*
-                Zamestnanec z = switch (skupina) {
-                    case "Datový analytik" -> new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, databaze.getAll());
-                    case "Bezpečnostní specialista" -> new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
-                    default -> throw new SQLException("Neznámá skupina: " + skupina);
-                };
-                */
+                
                 Zamestnanec z;
                 switch (skupina) {
                     case "Datový analytik":
                         z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, databaze.getAll());
                         break;
                     case "Bezpečnostní specialista":
-                        z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
+                        z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni, databaze.getAll());
                         break;
                     default:
                         throw new SQLException("Neznámá skupina: " + skupina);
@@ -193,7 +187,7 @@ public class SqlManager implements DataManager {
                 case "Datový analytik" ->
                     z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
                 case "Bezpečnostní specialista" ->
-                    z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
+                    z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni, existujici);
                 default -> 
                     System.out.println("Neznámá skupina: " + skupina);
             }

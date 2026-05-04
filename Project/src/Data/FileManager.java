@@ -53,7 +53,7 @@ public class FileManager implements DataManager {
                     case "Datový analytik" ->
                         z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, databaze.getAll());
                     case "Bezpečnostní specialista" ->
-                        z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
+                        z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni, databaze.getAll());
                     default -> {
                         System.out.println("Neznámá skupina: " + skupina);
                     }
@@ -127,7 +127,7 @@ public class FileManager implements DataManager {
                 case "Datový analytik" ->
                     z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
                 case "Bezpečnostní specialista" ->
-                    z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
+                    z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni, existujici);
                 default -> {
                     System.out.println("Neznámá skupina: " + skupina);
                 }
