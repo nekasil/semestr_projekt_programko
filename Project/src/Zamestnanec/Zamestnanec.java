@@ -128,6 +128,15 @@ public abstract class Zamestnanec {
         return this.spoluprace.size();
     }
 
+    public double getPriemernaKvalita() {
+        if (this.spoluprace.isEmpty()) return 0.0;
+        int sucet = 0;
+        for (Spoluprace s : this.spoluprace) {
+            sucet += s.getUroven().getHodnota();
+        }
+        return (double) sucet / this.spoluprace.size();
+    }
+
     // -- Statistiky
 
     // -- Vypis informacii--

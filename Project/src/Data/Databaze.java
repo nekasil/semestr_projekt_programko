@@ -2,6 +2,8 @@ package Data;
 import java.util.*;
 import Zamestnanec.*;
 
+
+
 public class Databaze {
     private final Map<Integer, Zamestnanec> zamestnanci = new HashMap<>();
 
