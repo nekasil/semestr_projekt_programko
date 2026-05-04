@@ -1,4 +1,3 @@
-// main.java
 package App;
 
 import Data.Databaze;
@@ -10,7 +9,6 @@ import java.util.Scanner;
 public class main {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
-            //Scanner scanner = new Scanner(System.in);
             Databaze databaze = new Databaze();
             
             int volba = 0;
@@ -51,7 +49,6 @@ public class main {
             
             Menu menu = new Menu(databaze, dataManager, isSqlMode);
             menu.run();
-            scanner.close();
         }
     }
 }

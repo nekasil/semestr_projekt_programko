@@ -2,12 +2,9 @@ package Data;
 import java.util.*;
 import Zamestnanec.*;
 
-
-
 public class Databaze {
     private final Map<Integer, Zamestnanec> zamestnanci = new HashMap<>();
 
-    // a) Přidání zaměstnance
     public void pridatZamestnance(Zamestnanec zamestnanec) {
         zamestnanci.put(zamestnanec.getId(), zamestnanec);
         initializovatDatabazi(); // Aktualizuj databází pro všechny DataAnalytiky
@@ -39,7 +36,7 @@ public class Databaze {
         kolega.pridatSpolupraci(new Spoluprace(idZamestnance, uroven2));
         System.out.println("Přidána vzájemná spolupráce:");
         System.out.println("  " + z.getJmeno() + " -> " + kolega.getJmeno() + " (" + uroven1 + ")");
-        System.out.println("  " + kolega.getJmeno() + " -> " + z.getJmeno() + " (" + uroven2 + ")");
+        System.out.println("  " + kolega.getJmeno() + " -> " + z.getJmeno() + " (" + uroven2 + ")\n");
     }
     
     // Přetížená metoda pro zpětnou kompatibilitu (stejná úroveň pro oba)
@@ -76,7 +73,7 @@ public class Databaze {
         System.out.println(" INFORMACE O ZAMĚSTNANCI ");
         z.vypisInfo();
         
-        System.out.println("\n Statistika spolupráce ");
+        System.out.println("\nStatistika spolupráce:");
         List<Spoluprace> spolupraci = z.getSpoluprace();
         
         if (spolupraci.isEmpty()) {

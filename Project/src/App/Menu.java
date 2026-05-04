@@ -1,15 +1,15 @@
-// Menu.java - úprava
 package App;
 
 import java.util.Scanner;
 import Data.*;
 import Zamestnanec.*;
 import java.util.List;
+
 public class Menu {
     private final Databaze databaze;
     private final DataManager dataManager;
     private final Scanner scanner;
-    private final boolean isSqlMode;  // Přidáme sledování režimu
+    private final boolean isSqlMode;
 
     public Menu(Databaze databaze, DataManager dataManager, boolean isSqlMode) {
         this.databaze = databaze;
@@ -45,7 +45,6 @@ public class Menu {
             }
         }
 
-        // Ukládáme jen v SQL režimu
         if (isSqlMode) {
             System.out.println("Ukládám data...");
             dataManager.ulozitData(databaze);
@@ -78,7 +77,6 @@ public class Menu {
         System.out.println("Vyberte skupinu: ");
         System.out.println("1. Datový analytik");
         System.out.println("2. Bezpečnostní specialista");
-        System.out.println("3. Načtení zaměstanance ze souboru");
         System.out.print("Skupina: ");
         int skupina = nactiCislo();
 
@@ -197,7 +195,7 @@ public class Menu {
         while (true) {
             try {
                 if (!scanner.hasNextLine()) {
-                    return 0; // Konec vstupu
+                    return 0;
                 }
                 return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
