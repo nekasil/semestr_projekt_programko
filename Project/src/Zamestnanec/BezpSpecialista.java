@@ -82,30 +82,35 @@ public class BezpSpecialista extends Zamestnanec {
         int pocet = zamestnanec.getPocetSpolupraci();
         double prumer = zamestnanec.getPriemernaKvalita();
 
-        double rizikoKontaktov;
+        double rizikoKontaktu = vypocetRizikaKontaktu(pocet);
+        double rizikoKvality = vypocetRizikaKvality(pocet, prumer);
+
+        return rizikoKontaktu + rizikoKvality;
+    }
+
+    private double vypocetRizikaKontaktu(int pocet) {
         if (pocet <= HRANICE_MALO_SPOLUPRACI) {
-            rizikoKontaktov = (double) pocet / HRANICE_MALO_SPOLUPRACI * 20.0;
+            return (double) pocet / HRANICE_MALO_SPOLUPRACI * 20.0;
         } else if (pocet <= HRANICE_VELA_SPOLUPRACI) {
-            rizikoKontaktov = 20.0 + (double)(pocet - HRANICE_MALO_SPOLUPRACI)
+            return 20.0 + (double)(pocet - HRANICE_MALO_SPOLUPRACI)
                     / (HRANICE_VELA_SPOLUPRACI - HRANICE_MALO_SPOLUPRACI) * 20.0;
         } else {
-            rizikoKontaktov = 40.0 + Math.min(10.0, (pocet - HRANICE_VELA_SPOLUPRACI) * 0.5);
+            return 40.0 + Math.min(10.0, (pocet - HRANICE_VELA_SPOLUPRACI) * 0.5);
         }
+    }
 
-        double rizikoKvality;
+    private double vypocetRizikaKvality(int pocet, double prumer) {
         if (pocet == 0) {
-            rizikoKvality = 0.0;
+            return 0.0;
         } else if (prumer <= HRANICE_NIZKA_KVALITA) {
-            rizikoKvality = 50.0;
+            return 50.0;
         } else if (prumer >= HRANICE_VYSOKA_KVALITA) {
-            rizikoKvality = 5.0;
+            return 5.0;
         } else {
             double pomer = (prumer - HRANICE_VYSOKA_KVALITA) 
                     / (HRANICE_NIZKA_KVALITA - HRANICE_VYSOKA_KVALITA);
-            rizikoKvality = 5.0 + pomer * 45.0;
+            return 5.0 + pomer * 45.0;
         }
-
-        return rizikoKontaktov + rizikoKvality;
     }
     
     private String ohodnotitRiziko(double skore) {

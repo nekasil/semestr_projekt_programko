@@ -33,7 +33,7 @@ public class DataAnalytik extends Zamestnanec {
     @Override
     public void dovednost() {
         if (databaze == null) {
-            System.out.println("Chyba: Databáze zaměstnanců není inicializována!");
+            System.out.println("Chyba: Databáze není inicializována!");
             return;
         }
 
@@ -42,13 +42,21 @@ public class DataAnalytik extends Zamestnanec {
             return;
         }
 
-        int maxSpolecnych = -1;
-        Zamestnanec najlepsi = null;
-
-        List<Integer> moeIdentifikatory = new ArrayList<>();
-        for (Spoluprace s : getSpoluprace()) {
-            moeIdentifikatory.add(s.getIdKolegu());
+        Zamestnanec nejlepsi = najdiKolegaSNejviceSpolecnych();
+        
+        if (nejlepsi != null) {
+            int pocet = spocitajSpolecne(nejlepsi);
+            System.out.println(nejlepsi.getJmeno() + " " + nejlepsi.getPrijmeni() + 
+                             " - " + pocet + " společných spolupracovníků");
+        } else {
+            System.out.println("Žádný spolupracovník nemá se mnou společné kolegy.");
         }
+    }
+
+    private Zamestnanec najdiKolegaSNejviceSpolecnych() {
+        int maxSpolecnych = -1;
+        Zamestnanec nejlepsi = null;
+        List<Integer> mojeIds = ziskejMojeIdentifikatory();
 
         for (Spoluprace moje : getSpoluprace()) {
             Zamestnanec kolega = najdiZamestnancePoId(moje.getIdKolegu());
@@ -56,23 +64,37 @@ public class DataAnalytik extends Zamestnanec {
 
             int pocetSpolecnych = 0;
             for (Spoluprace kolegova : kolega.getSpoluprace()) {
-                if (moeIdentifikatory.contains(kolegova.getIdKolegu())
-                        && kolegova.getIdKolegu() != getId()) {
+                if (mojeIds.contains(kolegova.getIdKolegu()) && kolegova.getIdKolegu() != getId()) {
                     pocetSpolecnych++;
                 }
             }
 
             if (pocetSpolecnych > maxSpolecnych) {
                 maxSpolecnych = pocetSpolecnych;
-                najlepsi = kolega;
+                nejlepsi = kolega;
             }
         }
 
-        if (najlepsi != null) {
-            System.out.println(najlepsi.getJmeno() + " " + najlepsi.getPrijmeni() + " - " + maxSpolecnych + " společných spolupracovníků");
-        } else {
-            System.out.println("Žádný spolupracovník nemá se mnou společné kolegy.");
+        return nejlepsi;
+    }
+
+    private List<Integer> ziskejMojeIdentifikatory() {
+        List<Integer> ids = new ArrayList<>();
+        for (Spoluprace s : getSpoluprace()) {
+            ids.add(s.getIdKolegu());
         }
+        return ids;
+    }
+
+    private int spocitajSpolecne(Zamestnanec kolega) {
+        List<Integer> mojeIds = ziskejMojeIdentifikatory();
+        int pocet = 0;
+        for (Spoluprace s : kolega.getSpoluprace()) {
+            if (mojeIds.contains(s.getIdKolegu()) && s.getIdKolegu() != getId()) {
+                pocet++;
+            }
+        }
+        return pocet;
     }
 
     private Zamestnanec najdiZamestnancePoId(int id) {
