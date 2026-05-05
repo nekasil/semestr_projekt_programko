@@ -1,4 +1,5 @@
 package Data;
+
 import java.util.*;
 import Zamestnanec.*;
 
@@ -7,11 +8,10 @@ public class Databaze {
 
     public void pridatZamestnance(Zamestnanec zamestnanec) {
         zamestnanci.put(zamestnanec.getId(), zamestnanec);
-        initializovatDatabazi(); // Aktualizuj databází pro všechny DataAnalytiky
+        initializovatDatabazi();
         System.out.println("Přidán zaměstnanec: " + zamestnanec);
     }
 
-    // b) Přidání spolupráce - obousměrné, ale se RŮZNÝMI ÚROVNĚMI
     public void pridatSpolupraci(int idZamestnance, int idKolegu, UrovenSpoluprace uroven1, UrovenSpoluprace uroven2) {
         Zamestnanec z = najdiPodleId(idZamestnance);
         Zamestnanec kolega = najdiPodleId(idKolegu);
@@ -25,13 +25,11 @@ public class Databaze {
             return;
         }
         
-        // Kontrola, zda spolupráce již neexistuje (obousměrná kontrola)
         if (z.existujeSpolupraceS(idKolegu) || kolega.existujeSpolupraceS(idZamestnance)) {
             System.out.println("Spolupráce mezi těmito zaměstnanci již existuje.");
             return;
         }
 
-        // Přidání spolupráce oběma směry - AUTOMATICKÉ VYTVOŘENÍ VZÁJEMNÉ SPOLUPRÁCE s RŮZNÝMI ÚROVNĚMI
         z.pridatSpolupraci(new Spoluprace(idKolegu, uroven1));
         kolega.pridatSpolupraci(new Spoluprace(idZamestnance, uroven2));
         System.out.println("Přidána vzájemná spolupráce:");
@@ -39,12 +37,10 @@ public class Databaze {
         System.out.println("  " + kolega.getJmeno() + " -> " + z.getJmeno() + " (" + uroven2 + ")\n");
     }
     
-    // Přetížená metoda pro zpětnou kompatibilitu (stejná úroveň pro oba)
     public void pridatSpolupraci(int idZamestnance, int idKolegu, UrovenSpoluprace uroven) {
         pridatSpolupraci(idZamestnance, idKolegu, uroven, uroven);
     }
 
-    // c) Odebrani zamestnance
     public void odebratZamestnance(int id) {
         if (!zamestnanci.containsKey(id)) {
             System.out.println("Zaměstnanec s ID " + id + " neexistuje.");
@@ -58,7 +54,6 @@ public class Databaze {
         System.out.println("Zaměstnanec s ID " + id + " byl odebrán.");
     }
 
-    // d) Vyhledání zaměstnance podle ID
     public Zamestnanec najdiPodleId(int id) {
         return zamestnanci.get(id);
     }
@@ -99,7 +94,6 @@ public class Databaze {
         }
     }
 
-    // e) Spuštění dovednosti zaměstnance dle jeho skupiny
     public void spustitDovednost(int id) {
         Zamestnanec z = najdiPodleId(id);
         if (z == null) {
@@ -108,12 +102,9 @@ public class Databaze {
         }
 
         System.out.println("\n=== Spuštění dovednosti zaměstnance: " + z.getJmeno() + " " + z.getPrijmeni() + " ===");
-        
-        // Polymorfismus - zavolá správnou dovednost podle typu zaměstnance
         z.dovednost();
     }
 
-    // f) abecedni vypis zamestnancu/
     public void vypisAbecedne() {
         if (zamestnanci.isEmpty()) {
             System.out.println("Databáze je prázdná.");
@@ -137,7 +128,6 @@ public class Databaze {
         }
     }
 
-    // g) Statistiky
     public void vypisStatistiky() {
         if (zamestnanci.isEmpty()) {
             System.out.println("Databáze je prázdná.");
@@ -167,7 +157,6 @@ public class Databaze {
         System.out.println("Zaměstnanec s nejvíce vazbami: " + nejvicVazeb + " (" + nejvicVazeb.getPocetSpolupraci() + " vazeb)");
     }
 
-    // h) Vypis poctu zamestnancu
     public void vypisPoctySkupin(){
         if (zamestnanci.isEmpty()) {
             System.out.println("Databáze je prázdná.");
@@ -188,7 +177,6 @@ public class Databaze {
         System.out.println("\nCelkem: " + zamestnanci.size() + " zaměstnanců");
     }
 
-    // i) Úprava ohodnocení existující spolupráce - druhý zaměstnanec si změní hodnocení
     public void upravitSpolupraci(int idZamestnance, int idKolegu, UrovenSpoluprace novaUroven) {
         Zamestnanec z = najdiPodleId(idZamestnance);
         
@@ -209,7 +197,6 @@ public class Databaze {
         }
     }
 
-    // Pomocne metody
     public List<Zamestnanec> getAll() {
         return new ArrayList<>(zamestnanci.values());
     }
@@ -218,7 +205,6 @@ public class Databaze {
         return zamestnanci.isEmpty();
     }
 
-    // Nastaví odkaz na databázi pro všechny DataAnalytiky a BezpSpecialisty (kvůli dovednosti)
     public void initializovatDatabazi() {
         List<Zamestnanec> vsichni = new ArrayList<>(zamestnanci.values());
         for (Zamestnanec z : vsichni) {

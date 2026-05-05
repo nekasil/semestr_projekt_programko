@@ -30,10 +30,6 @@ public class DataAnalytik extends Zamestnanec {
     @Override
     public String getSkupina() { return "Datový analytik"; }
 
-    /**
-     * Dovednost: Najde kolegu, se kterým má tento analytik
-     * nejvíce společných spolupracovníků.
-     */
     @Override
     public void dovednost() {
         if (databaze == null) {

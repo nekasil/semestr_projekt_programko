@@ -1,4 +1,3 @@
-// FileManager.java
 package Data;
 
 import java.io.*;
@@ -103,7 +102,6 @@ public class FileManager implements DataManager {
         }
     }
 
-    // Načtení jednotlivého zaměstnance ze souboru
     public List<Zamestnanec> nacistZamestnanceZeSouboru(String nazevSouboru, List<Zamestnanec> existujici) {
         List<Zamestnanec> nacitani = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(nazevSouboru))) {
@@ -153,44 +151,7 @@ public class FileManager implements DataManager {
         }
         return nacitani;
     }
-    /*
-    public List<Zamestnanec> nacistZamestnanceZeSouboru(String nazevSouboru, List<Zamestnanec> existujici) {
-    List<Zamestnanec> nacitani = new ArrayList<>();
-    try (BufferedReader reader = new BufferedReader(new FileReader(nazevSouboru))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if (line.trim().isEmpty()) continue;
-
-            String[] parts = line.split("\\|");
-            if (parts.length < 5) continue;
-
-            int id              = Integer.parseInt(parts[0].trim());
-            String jmeno        = parts[1].trim();
-            String prijmeni     = parts[2].trim();
-            int rokNarozeni     = Integer.parseInt(parts[3].trim());
-            String skupina      = parts[4].trim();
-
-            Zamestnanec z = null;
-            switch (skupina) {
-                case "Datový analytik" ->
-                    z = new DataAnalytik(id, jmeno, prijmeni, rokNarozeni, existujici);
-                case "Bezpečnostní specialista" ->
-                    z = new BezpSpecialista(id, jmeno, prijmeni, rokNarozeni);
-                default ->
-                    System.out.println("Neznámá skupina: " + skupina);
-            }
-
-            if (z != null) nacitani.add(z);
-        }
-        System.out.println("Načteno " + nacitani.size() + " zaměstnanců ze souboru.");
-    } catch (IOException e) {
-        System.out.println("Chyba při načítání ze souboru: " + e.getMessage());
-    }
-    return nacitani;
-}
-     */
-
-    // Uložení jednotlivého zaměstnance do souboru
+    
     public void ulozitZamestnanceDoSouboru(Zamestnanec zamestnanec, String nazevSouboru) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(nazevSouboru, true))) {
             writer.println(zamestnanec.getId() + "|" + zamestnanec.getJmeno() + "|" 

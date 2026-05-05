@@ -20,7 +20,6 @@ public abstract class Zamestnanec {
         this.spoluprace = new ArrayList<>();
     }
 
-    // konstruktor pre nacitanie zo suboru s id
     public Zamestnanec(int id, String jmeno, String prijmeni, int rokNarozeni) {
         this.id = id;
         if (id >= nextId) nextId = id + 1;
@@ -29,8 +28,6 @@ public abstract class Zamestnanec {
         this.rokNarozeni = rokNarozeni;
         this.spoluprace = new ArrayList<>();
     }
-
-    // -- Gettery a settery --
 
     public int getId() {
         return id;
@@ -45,26 +42,9 @@ public abstract class Zamestnanec {
         return rokNarozeni;
     }
 
-    // Pravdepodobne useless
-    /*
-    public void setJmeno(String jmeno) {
-        this.jmeno = jmeno;
-    }
-    public void setPrijmeni(String prijmeni) {
-        this.prijmeni = prijmeni;
-    }
-    public void setRokNarozeni(int rokNarozeni) {
-        this.rokNarozeni = rokNarozeni;
-    }
-    */
-
-    // -- Metody skupiny zamestnance --
-
     public abstract void dovednost();
 
     public abstract String getSkupina();
-
-    // Metoda na vytvaranie zamestnancov
 
     public static Zamestnanec vytvorZamestnance(int skupina, String jmeno, String prijmeni, int rokNarozeni, List<Zamestnanec> databaze) {
         switch (skupina) {
@@ -73,8 +53,6 @@ public abstract class Zamestnanec {
             default : throw new IllegalArgumentException("Neplatná skupina: " + skupina);
         }
     }
-
-    // -- Správa spolupráce --
 
     public void pridatSpolupraci(Spoluprace spoluprace) {
         for (Spoluprace s : this.spoluprace) {
@@ -87,7 +65,6 @@ public abstract class Zamestnanec {
         
     }
 
-    // Úprava úrovně existující spolupráce
     public boolean upravitSpolupraci(int idKolegu, UrovenSpoluprace novaUroven) {
         for (Spoluprace s : this.spoluprace) {
             if (s.getIdKolegu() == idKolegu) {
@@ -137,9 +114,7 @@ public abstract class Zamestnanec {
         return (double) sucet / this.spoluprace.size();
     }
 
-    // -- Statistiky
 
-    // -- Vypis informacii--
     public void vypisInfo() {
         System.out.println("\n=== Informace o zaměstnanci ===");
         System.out.println("ID: " + id);

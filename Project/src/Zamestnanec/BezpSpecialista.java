@@ -56,7 +56,7 @@ public class BezpSpecialista extends Zamestnanec {
         
         System.out.print("Zadejte ID zaměstnance, kterého chcete vyhodnotit: ");
         int idVybr = scanner.nextInt();
-        scanner.nextLine(); // Vyčistit buffer
+        scanner.nextLine();
         
         Zamestnanec vybrany = null;
         for (Zamestnanec z : databaze) {
@@ -78,20 +78,6 @@ public class BezpSpecialista extends Zamestnanec {
         System.out.printf("Rizikové skóre: %.2f / 100 - %s%n", skore, uroven);
     }
 
-    /**
-     * Vypočítá rizikové skóre pro konkrétního zaměstnance
-     * Riziko = Riziko_kontaktů + Riziko_kvality
-     * 
-     * Riziko kontaktů (0-50 bodů):
-     * - 0-2 kolegy: 0-20 bodů
-     * - 3-10 kolegů: 20-40 bodů
-     * - 10+ kolegů: 40-50 bodů
-     * 
-     * Riziko kvality (0-50 bodů):
-     * - Nízká kvalita (≤1.5): 50 bodů
-     * - Dobrá kvalita (≥2.5): 5 bodů
-     * - Střední: lineární interpolace
-     */
     public double vypocetRizikaProZamestnance(Zamestnanec zamestnanec) {
         int pocet = zamestnanec.getPocetSpolupraci();
         double prumer = zamestnanec.getPriemernaKvalita();

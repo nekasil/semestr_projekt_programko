@@ -1,4 +1,3 @@
-// DataManager.java
 package Data;
 
 import Zamestnanec.*;

@@ -1,4 +1,5 @@
 package Data;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,18 +8,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import Zamestnanec.*;
 
-import Zamestnanec.BezpSpecialista;
-import Zamestnanec.DataAnalytik;
-import Zamestnanec.Spoluprace;
-import Zamestnanec.UrovenSpoluprace;
-import Zamestnanec.Zamestnanec;
 
 public class SqlManager implements DataManager {
 
     private static final String DB_URL = "jdbc:sqlite:zamestnanci.db";
 
-    //Inicializace databáze
     public void inicializace() {
         try (Connection conn = connect();
              Statement stmt = conn.createStatement()) {
@@ -50,7 +46,6 @@ public class SqlManager implements DataManager {
         }
     }
 
-    // Ulozeni dat pri ukonceni
     public void ulozitData(Databaze databaze) {
         try (Connection conn = connect()) {
             conn.setAutoCommit(false);
@@ -71,10 +66,8 @@ public class SqlManager implements DataManager {
         }
     }
 
-    // Nacteni dat pri spusteni
     public void nacistData(Databaze databaze) {
         try (Connection conn = connect()) {
-
             nacteniZamestnancu(conn, databaze);
             nacteniSpolupraci(conn, databaze);
             System.out.println("Data úspešne načtena z SQL databáze.");
@@ -84,7 +77,6 @@ public class SqlManager implements DataManager {
         }
     }
 
-    // Pomocne - ukladani
     private void ulozitZamestnance(Connection conn, List<Zamestnanec> zamestnanci) throws SQLException {
         String sql = "INSERT INTO zamestnanci (id, jmeno, prijmeni, rokNarozeni, skupina) VALUES (?, ?, ?, ? ,?)";
 
@@ -124,7 +116,6 @@ public class SqlManager implements DataManager {
         }
     }
 
-    // Pomocne - nacteni
     private void nacteniZamestnancu(Connection conn, Databaze databaze) throws SQLException {
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery("SELECT * FROM zamestnanci")) {
@@ -165,12 +156,10 @@ public class SqlManager implements DataManager {
         }
     }
 
-    // Pomocne - spojeni
     private Connection connect() throws SQLException {
         return DriverManager.getConnection(DB_URL);
     }
 
-    // Načtení jednotlivého zaměstnance ze souboru
     @Override
     public List<Zamestnanec> nacistZamestnanceZeSouboru(String nazevSouboru, List<Zamestnanec> existujici) {
         List<Zamestnanec> vysledok = new ArrayList<>();
@@ -222,7 +211,6 @@ public class SqlManager implements DataManager {
         return vysledok;
     }
 
-    // Uložení jednotlivého zaměstnance do souboru
     @Override
     public void ulozitZamestnanceDoSouboru(Zamestnanec zamestnanec, String nazevSouboru) {
         try (java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileWriter(nazevSouboru, true))) {
